@@ -23,13 +23,13 @@
       </el-table-column>
       <el-table-column prop="isnew" label="是否新品" width="60">
         <template slot-scope="item">
-          <el-tag type="success" v-if="item.row.status == 1">是</el-tag>
+          <el-tag type="success" v-if="item.row.isnew == 1">是</el-tag>
           <el-tag type="danger" v-else>否</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="ishot" label="是否热卖" width="60">
         <template slot-scope="item">
-          <el-tag type="success" v-if="item.row.status == 1">是</el-tag>
+          <el-tag type="success" v-if="item.row.ishot == 1">是</el-tag>
           <el-tag type="danger" v-else>否</el-tag>
         </template>
       </el-table-column>
@@ -122,6 +122,7 @@ export default {
                 }
               }
               this.getGoodsListAction(this.params);
+              this.getGoodsTotalAction();
             }
           });
         })

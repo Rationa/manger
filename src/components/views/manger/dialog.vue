@@ -86,6 +86,7 @@ export default {
   },
   mounted() {
     this.getMemberListAction();
+    this.getRoleListAction();
   },
   computed: {
     ...mapGetters({
@@ -97,6 +98,7 @@ export default {
     ...mapActions({
       getMemberListAction: "member/getMemberListAction",
       getRoleListAction: "role/getRoleListAction",
+      getAdminListTotalAction: "admin/getAdminListTotalAction",
     }),
     reset() {
       this.form = {
@@ -113,7 +115,7 @@ export default {
     },
       // 添加
     confirm() {
-      this.$refs["forData"].validate((valid) => {
+      this.$refs["formData"].validate((valid) => {
         if (valid) {
           postAdmin(this.form).then((res) => {
             if (res.data.code == 200) {
@@ -121,8 +123,8 @@ export default {
               this.$message.success(res.data.msg);
               //关闭弹框
               this.cancel();
-              this.getMemberListAction  ();
-              this.reset();
+              this.getMemberListAction();
+              this.getAdminListTotalAction();
             } else {
               this.$message.error(res.data.msg);
             }
@@ -134,7 +136,6 @@ export default {
       });
     },
     edit(uid) {
-      console.log(uid, "对话框");
       getAdminOne({ uid }).then((res) => {
         if (res.data.code == 200) {
           console.log(res.data);

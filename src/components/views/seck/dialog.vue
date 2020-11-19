@@ -25,8 +25,9 @@
       <el-form-item label="一级分类" :label-width="formLabelWidth">
         <el-select
           v-model="form.first_cateid"
+          :disabled="!addInfo.isadd"
           placeholder="请选择"
-          @change="selectCate"
+          @change="selectCate(false)"
         >
           <el-option
             v-for="item in cateList"
@@ -39,8 +40,9 @@
       <el-form-item label="二级分类" :label-width="formLabelWidth">
         <el-select
           v-model="form.second_cateid"
+          :disabled="!addInfo.isadd"
           placeholder="请选择"
-          @change="selectCateChild"
+          @change="selectCateChild(false)"
         >
           <el-option
             v-for="item in cateChildren"
@@ -51,7 +53,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="商品" :label-width="formLabelWidth">
-        <el-select v-model="form.goodsid" placeholder="请选择">
+        <el-select
+          v-model="form.goodsid"
+          :disabled="!addInfo.isadd"
+          placeholder="请选择"
+        >
           <el-option
             v-for="item in goodsList"
             :key="item.id"
@@ -176,11 +182,10 @@ export default {
       }).then((res) => {
         console.log(res.data);
         this.goodsList = res.data.list;
-         if (!id) {
-            this.form.goodsid = "";
-          }
+        if (!id) {
+          this.form.goodsid = "";
+        }
       });
-      
     },
     // 添加
     confirm() {
@@ -195,7 +200,7 @@ export default {
               //关闭弹框
               this.cancel();
               this.getSeckListAction();
-              this.getGoodsTotalAction()
+              this.getGoodsTotalAction();
               this.reset();
             } else {
               this.$message.error(res.data.msg);
@@ -213,10 +218,7 @@ export default {
           this.form = res.data.list;
           // 真坑
           this.form.id = id;
-          this.date = [
-            new Date(parseFloat(this.form.begintime)),
-            new Date(parseFloat(this.form.endtime)),
-          ];
+          this.date = [this.form.begintime, this.form.endtime];
           this.selectCate(true);
           this.selectCateChild(true);
         }

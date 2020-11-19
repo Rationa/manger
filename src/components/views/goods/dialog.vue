@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="addInfo.isadd ? '添加菜单' : '修改菜单'"
+    :title="addInfo.isadd ? '添加商品' : '修改商品'"
     :visible.sync="addInfo.isShow"
     center
     :before-close="cancel"
@@ -133,6 +133,9 @@
         >
         </el-switch>
       </el-form-item>
+      <el-form-item label="商品描述" :label-width="formLabelWidth">
+        <div id="editor"></div>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
@@ -145,6 +148,7 @@
 </template>
 
 <script>
+import E from "wangeditor";
 // 导入接口
 import { postGoods, getGoodsOne, editGoods } from "../../../util/axios";
 // 导入vux辅助性函数
@@ -168,6 +172,7 @@ export default {
         ishot: 1,
         status: 1,
       },
+      editor: null,
       isdelete: false,
       // 商品分类子孩子
       cateChildren: [],
@@ -224,6 +229,13 @@ export default {
       getSpecsListAction: "specs/getSpecsListAction",
       getSpecsTotalAction: "specs/getSpecsTotalAction",
     }),
+    //表单弹框打开时创建富文本
+    createEditor() {
+      this.editor = new E("#editor");
+      this.editor.create();
+      //设置内容 设置表单描述信息参数
+      this.editor.txt.html(this.form.description);
+    },
     // 图片预览
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -238,12 +250,15 @@ export default {
     },
     onChange(file) {
       this.imgUrl = file.raw;
-      this.isdelete = false
+      this.isdelete = false;
     },
     cancel() {
       // 传给父组件isShow值
       this.$emit("cancel", false);
       this.reset();
+      // 富文本销毁
+      this.editor.destroy();
+      this.editor = null;
     },
     reset() {
       this.form = {
@@ -289,10 +304,13 @@ export default {
           let data = this.form;
           // 将普通文件转为FormData形式
           let file = new FormData();
+          //把编辑器中的内容设置给我的描述参数
+          this.form.description = this.editor.txt.html();
           // 必须通过append 去添加他的属性
           for (let i in data) {
             file.append(i, data[i]);
           }
+
           // 将图片信息添加到img中
           file.set("img", this.imgUrl);
           postGoods(file).then((res) => {
@@ -302,7 +320,7 @@ export default {
               //关闭弹框
               this.cancel();
               this.getGoodsListAction(this.params);
-              this.reset();
+              this.getGoodsTotalAction();
             } else {
               this.$message.error(res.data.msg);
             }
@@ -318,6 +336,7 @@ export default {
       getGoodsOne({ id }).then((res) => {
         if (res.data.code == 200) {
           this.form = res.data.list;
+          this.createEditor();
           // 还是要记住
           this.fileList = this.form.img
             ? [{ url: `${this.$imgUrl}${this.form.img}` }]
@@ -329,14 +348,16 @@ export default {
     },
     update() {
       let data = this.form;
+      console.log(this.form)
       // 将普通文件转为FormData形式
       let file = new FormData();
+      //把编辑器中的内容设置给我的描述参数
+      this.form.description = this.editor.txt.html();
       // 必须通过append 去添加他的属性
       for (let i in data) {
         file.append(i, data[i]);
       }
       // 将图片信息添加到img中
-      // this.imgUrl = this.imgUrl ? this.imgUrl : this.form.img;
       this.imgUrl = this.imgUrl ? this.imgUrl : this.form.img;
       if (this.isdelete) {
         this.imgUrl = "";

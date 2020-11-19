@@ -27,6 +27,7 @@ export default {
     add() {
       this.addInfo.isShow = true;
       this.addInfo.isadd = true;
+      this.$refs.dialog.createEditor();
     },
     // 将关闭信息传给子组件
     cancel(e) {

@@ -58,6 +58,7 @@ export default {
         img: "",
         status: 1,
       },
+      isdelete: false,
       // 图片预览地址
       dialogImageUrl: "",
       // 图片是否预览
@@ -86,10 +87,13 @@ export default {
     },
     // 图片移除
     handleRemove(file, fileList) {
-      this.imgUrl = ''
+      this.imgUrl = "";
+      this.fileList = [];
+      this.isdelete = true;
     },
     onChange(file) {
       this.imgUrl = file.raw;
+      this.isdelete = false;
     },
     cancel() {
       // 传给父组件isShow值
@@ -103,6 +107,7 @@ export default {
         status: 1,
       };
       this.fileList = [];
+      this.imgUrl = "";
     },
     // 添加
     confirm() {
@@ -117,7 +122,7 @@ export default {
             file.append(i, data[i]);
           }
           // 将图片信息添加到img中
-          file.append("img", this.imgUrl);
+          file.set("img", this.imgUrl);
           // 用get去获取结果
           postBanner(file).then((res) => {
             if (res.data.code == 200) {
@@ -138,7 +143,7 @@ export default {
     },
     // 编辑
     edit(id) {
-      console.log(this.fileList)
+      console.log(this.fileList);
       getBannerOne({ id }).then((res) => {
         if (res.data.code == 200) {
           this.form = res.data.list;
@@ -159,7 +164,13 @@ export default {
         file.append(i, data[i]);
       }
       // 将图片信息添加到img中
-      file.append("img", this.imgUrl);
+      this.imgUrl = this.imgUrl ? this.imgUrl : this.form.img;
+      if (this.isdelete) {
+        this.imgUrl = "";
+        this.isdelete = false;
+      }
+      // 将图片信息添加到img中
+      file.set("img", this.imgUrl);
       editBanner(file).then((res) => {
         if (res.data.code == 200) {
           this.$message.success(res.data.msg);

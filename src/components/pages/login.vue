@@ -25,6 +25,7 @@
 
 <script>
 import { adminLogin } from "../../util/axios";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -54,6 +55,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      changeUserInfoAction: "changeUserInfoAction",
+    }),
     login() {
       //console.log(this.$refs[formName],'formDOM')
       //validate 验证
@@ -64,11 +68,11 @@ export default {
           adminLogin(this.loginForm).then((res) => {
             if (res.data.code == 200) {
               //登录成功之后，把登录数据存储到本地存储中
-              sessionStorage.setItem('userInfo',JSON.stringify(res.data.list))
-              this.$message.success(res.data.msg)
-              this.$router.push('/menu')
-            }else{
-              this.$message.error(res.data.msg)
+              this.changeUserInfoAction(res.data.list);
+              this.$message.success(res.data.msg);
+              this.$router.push("/menu");
+            } else {
+              this.$message.error(res.data.msg);
             }
           });
         } else {

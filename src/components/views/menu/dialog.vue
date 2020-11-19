@@ -205,8 +205,6 @@ export default {
       });
     },
     update() {
-      console.log(this.form.id);
-      let id = this.form.id;
       editMenuList(this.form).then((res) => {
         if (res.data.code == 200) {
           this.$message.success(res.data.msg);
