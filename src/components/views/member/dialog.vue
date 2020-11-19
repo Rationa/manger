@@ -9,11 +9,10 @@
       <el-form-item label="手机号" prop="phone" :label-width="formLabelWidth">
         <el-input v-model="form.phone" autocomplete="off"></el-input>
       </el-form-item>
-
       <el-form-item label="昵称" :label-width="formLabelWidth">
         <el-input v-model="form.nickname" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="昵称" :label-width="formLabelWidth">
+      <el-form-item label="密码" :label-width="formLabelWidth">
         <el-input v-model="form.password" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="状态" :label-width="formLabelWidth">

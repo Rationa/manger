@@ -12,6 +12,9 @@ import ElementUI from 'element-ui'
 import './assets/css/reset.css'
 import 'element-ui/lib/theme-chalk/index.css'
 
+import echarts from 'echarts'
+Vue.prototype.$eh  = echarts
+
 Vue.use(ElementUI)
 
 Vue.prototype.$imgUrl = 'http://localhost:3000'
