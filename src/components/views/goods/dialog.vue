@@ -14,7 +14,7 @@
         <el-select
           v-model="form.first_cateid"
           placeholder="请选择"
-          @change="select_cate"
+          @change="select_cate(false)"
         >
           <el-option
             v-for="item in cateList"
@@ -87,7 +87,7 @@
         <el-select
           v-model="form.specsid"
           placeholder="请选择"
-          @change="select_specs"
+          @change="select_specs(false)"
         >
           <el-option
             v-for="item in specsList"
@@ -279,23 +279,26 @@ export default {
       this.imgUrl = "";
     },
     //select被选中cate商品分类
-    select_cate() {
+    select_cate(id) {
       // 传入下标
-
       let index = this.cateList.findIndex((item, i) => {
         return this.form.first_cateid == item.id;
       });
       this.cateChildren = this.cateList[index].children;
-      this.form.second_cateid = "";
+      if (!id) {
+        this.form.second_cateid = "";
+      }
     },
     //select被选中商品规格
-    select_specs() {
+    select_specs(id) {
       // 传入下标
       let index = this.specsList.findIndex((item, i) => {
         return this.form.specsid == item.id;
       });
       this.specsChildren = this.specsList[index].attrs;
-      this.form.specsattr = "";
+      if (!id) {
+        this.form.specsattr = "";
+      }
     },
     // 添加
     confirm() {
@@ -337,6 +340,8 @@ export default {
         if (res.data.code == 200) {
           this.form = res.data.list;
           this.createEditor();
+          this.select_cate(true);
+          this.select_specs(true);
           // 还是要记住
           this.fileList = this.form.img
             ? [{ url: `${this.$imgUrl}${this.form.img}` }]
@@ -348,7 +353,7 @@ export default {
     },
     update() {
       let data = this.form;
-      console.log(this.form)
+      console.log(this.form);
       // 将普通文件转为FormData形式
       let file = new FormData();
       //把编辑器中的内容设置给我的描述参数
